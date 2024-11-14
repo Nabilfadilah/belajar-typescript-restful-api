@@ -1,0 +1,5 @@
+semua request akan masuk ke folder controller ini.
+yang isinya nanti handler request untuk web nya. 
+akan menerima request yang nanti semua bisnis logicnya disimpan di folder service.
+
+menerima request mengirim data ke service, menerima data dari servicenya lalu dikembalikan ke response web nya.  
