@@ -60,7 +60,7 @@ describe('POST /api/users', () => {
 // user login
 describe('POST /api/users/login', () => {
 
-    // menambahkan sesudah test selesai
+    // menambahkan sebeleum test selesai
     beforeEach(async () => {
         await UserTest.create();
     })
@@ -112,5 +112,41 @@ describe('POST /api/users/login', () => {
     //     expect(response.status).toBe(401)
     //     expect(response.body.errors).toBeDefined()
     // })
+})
 
+// test get user login
+describe('GET /api/users/current', () => {
+    
+    // menambahkan sebelum test selesai
+    beforeEach(async () => {
+        await UserTest.create();
+    })
+
+    // menambahkan sesudah
+    afterEach(async () => {
+        await UserTest.delete();
+    })
+
+    // tokennya berhasil
+    it('should be able to get user', async () => {
+        const response = await supertest(web)
+        .get("/api/users/current")
+        .set("X-API-TOKEN", "test")
+
+        logger.debug(response.body)
+        expect(response.status).toBe(200)
+        expect(response.body.data.username).toBe("test")
+        expect(response.body.data.name).toBe("test")
+    })
+    
+    // tokenya salah
+    it('should reject get user if token is invalid', async () => {
+        const response = await supertest(web)
+        .get("/api/users/current")
+        .set("X-API-TOKEN", "salah")
+
+        logger.debug(response.body)
+        expect(response.status).toBe(401)
+        expect(response.body.errors).toBeDefined()
+    })
 })
