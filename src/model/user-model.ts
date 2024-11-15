@@ -1,5 +1,6 @@
 import { User } from "@prisma/client";
 
+// register user
 export type UserResponse = {
     username: string;
     name: string;
@@ -9,6 +10,12 @@ export type UserResponse = {
 export type CreateUserRequest = {
     username: string;
     name: string;
+    password: string; 
+}
+
+// login user
+export type LoginUserRequest = {
+    username: string;
     password: string; 
 }
 

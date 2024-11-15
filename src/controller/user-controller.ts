@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { CreateUserRequest } from "../model/user-model";
+import { CreateUserRequest, LoginUserRequest } from "../model/user-model";
 import { UserService } from "../service/user-service";
 
 export class UserController {
@@ -19,4 +19,22 @@ export class UserController {
             next(e)
         }
     }
+    
+    // login user
+    static async login(req: Request, res: Response, next: NextFunction) {
+        // lakukan pemanggilan data service 
+        try {
+            // request dengan LoginUserRequest yang diambil dari body yang di konfersi ke createUserRequest
+            const request: LoginUserRequest = req.body as LoginUserRequest;
+            // kirim/simpan ke service dalam response
+            const response = await UserService.login(request);
+            // dan response nya kita bentuk dalam json body sesuai api spec
+            res.status(200).json({
+                data: response
+            })
+        } catch (e) {
+            next(e)
+        }
+    }
+
 }

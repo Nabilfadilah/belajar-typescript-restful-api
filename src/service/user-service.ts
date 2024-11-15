@@ -1,9 +1,10 @@
 import { prismaClient } from "../application/database";
 import { ResponseError } from "../error/response-error";
-import { CreateUserRequest, toUserResponse, UserResponse } from "../model/user-model";
+import { CreateUserRequest, LoginUserRequest, toUserResponse, UserResponse } from "../model/user-model";
 import { UserValidation } from "../validation/user-validation";
 import { Validation } from "../validation/validation";
 import bcrypt from "bcrypt"
+import {v4 as uuid} from "uuid"
 
 export class UserService {
 
@@ -36,5 +37,48 @@ export class UserService {
         // kalau sukses, berati tinggal konfersi dari user menjadi userResponse
         // user dari prisma client itu balikannya sebuah type user dari prisma 
         return toUserResponse(user);
+    }
+
+    // login user
+    static async login(request: LoginUserRequest): Promise<UserResponse> {
+        const loginRequest = Validation.validate(UserValidation.LOGIN, request);
+
+        // cek ke database apakah usernya ada, kalau ada maka cek passwordnya apakah valid atau tidak
+        // kalau valid maka buat tokennya dan balikan usernya 
+        let user = await prismaClient.user.findUnique({
+            where: {
+                username: loginRequest.username
+            }
+        })
+
+        if(!user) {
+            throw new ResponseError(401, "Username or password is wrong");
+        }
+
+        // cek passwordnya jika valid
+        // yang belum di hashing yaitu loginRequest.password, dan yang sudah hashing yaitu user.password 
+        const isPasswordValid = await bcrypt.compare(loginRequest.password, user.password)
+
+        // kalau tidak valid
+        if (!isPasswordValid) {
+            throw new ResponseError(401, "Username or password is wrong");
+        }
+
+        // ubah data tokenya
+        user = await prismaClient.user.update({
+            where: {
+                username: loginRequest.username
+            },
+            // update datanya token
+            // nanti otomatis data resultnya disimpan di variabel user
+            data: {
+                token: uuid()
+            }
+        })
+
+        // response
+        const response = toUserResponse(user);
+        response.token = user.token!;
+        return response;
     }
 }
