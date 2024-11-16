@@ -68,4 +68,19 @@ export class UserController {
             next(e)
         }
     }
+
+    // logout user
+    static async logout(req: UserRequest, res: Response, next: NextFunction) {
+        // lakukan pemanggilan data service 
+        try {
+            // kirim/simpan ke user service
+            await UserService.logout(req.user!);
+            // dan response nya kita bentuk dalam json body sesuai api spec
+            res.status(200).json({
+                data: "OK"
+            })
+        } catch (e) {
+            next(e)
+        }
+    }
 }

@@ -225,3 +225,44 @@ describe('PATCH /api/users/current', () => {
         expect(await bcrypt.compare("benar", user.password)).toBe(true)
     })
 })
+
+// logout user test
+describe('DELETE /api/users/current', () => {
+   
+    // menambahkan sebelum test selesai
+    beforeEach(async () => {
+        await UserTest.create();
+    })
+
+    // menambahkan sesudah
+    afterEach(async () => {
+        await UserTest.delete();
+    })
+
+    // logout benar
+    it('should be able to logout', async () => {
+        const response = await supertest(web)
+            .delete("/api/users/current")
+            .set("X-API-TOKEN", "test")
+        
+        logger.debug(response.body)
+        expect(response.status).toBe(200)
+        expect(response.body.data).toBe("OK")
+
+        // ambil dari data database
+        const user = await UserTest.get();
+        expect(user.token).toBeNull();
+    })
+    
+    // token salah
+    it('should reject logout user if token is wrong', async () => {
+        const response = await supertest(web)
+            .delete("/api/users/current")
+            .set("X-API-TOKEN", "salah")
+        
+        logger.debug(response.body)
+        expect(response.status).toBe(401)
+        expect(response.body.errors).toBeDefined();
+    })
+
+})
