@@ -41,5 +41,17 @@ export class UserTest {
         }
 
         return user;
-    }
+    }    
+}
+
+export class ContactTest {
+
+    // untuk menghapus semua contact
+    static async deleteAll() {
+        await prismaClient.contact.deleteMany({
+            where: {
+                username: "test"
+            }
+        })
+    } 
 }
