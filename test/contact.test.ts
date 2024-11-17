@@ -164,3 +164,46 @@ describe('PUT /api/contacts/:contactId', () => {
         expect(response.body.errors).toBeDefined();
     })
 })
+
+// delete contct api test
+describe('DELETE /api/contacts/:contactId', () => {
+
+     // menambahkan sebelum test selesai
+     beforeEach(async () => {
+        await UserTest.create();
+        await ContactTest.create();
+    })
+
+    // menambahkan sesudah
+    afterEach(async () => {
+        // menghapus semua contact
+        await ContactTest.deleteAll()
+
+        await UserTest.delete();
+    })
+
+    // test sukses
+    it('should be able to remove contact', async () => {
+        const contact = await ContactTest.get();
+        const response = await supertest(web)
+            .delete(`/api/contact/${contact.id}`)
+            .set("X-API-TOKEN", "test");
+        
+        logger.debug(response.body);
+        expect(response.status).toBe(200);
+        expect(response.body.data).toBe("OK")
+    })
+    
+    // test gagal
+    it('should reject remove contact if contact is not found', async () => {
+        const contact = await ContactTest.get();
+        const response = await supertest(web)
+            .delete(`/api/contact/${contact.id + 1}`)
+            .set("X-API-TOKEN", "test");
+        
+        logger.debug(response.body);
+        expect(response.status).toBe(404);
+        expect(response.body.errors).toBeDefined();
+    })
+    
+})

@@ -75,5 +75,23 @@ export class ContactService {
         return toContactResponse(contact)
     }
 
+    // remove contact
+    static async remove(user: User, id: number) : Promise<ContactResponse> {
+
+        // cek apakah contact nya ada?
+        await this.checkContactMustExists(user.username, id);
+
+        // delete datanya
+        const contact = await prismaClient.contact.delete({
+            where: {
+                id: id,
+                username: user.username
+            }
+        })
+
+        return toContactResponse(contact);
+
+    }
+
 
 }
