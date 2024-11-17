@@ -57,5 +57,52 @@ describe('POST /api/contacts', () => {
         expect(response.status).toBe(400);
         expect(response.body.errors).toBeDefined();
     })
+})
 
+// get contatc api test
+describe('GET /api/contacts/:contactId', () => {
+
+    // menambahkan sebelum test selesai
+    beforeEach(async () => {
+        await UserTest.create();
+        await ContactTest.create();
+    })
+
+    // menambahkan sesudah
+    afterEach(async () => {
+        // menghapus semua contact
+        await ContactTest.deleteAll()
+
+        await UserTest.delete();
+    })
+
+    // datanya benar
+    it('should be able get contact', async () => {
+        // ambil contact nya 
+        const contact = await ContactTest.get()
+        const response = await supertest(web)
+            .get(`/api/contacts/${contact.id}`)
+            .set("X-API-TOKEN", "test")
+        
+        logger.debug(response.body)
+        expect(response.status).toBe(200)
+        expect(response.body.data.id).toBeDefined()
+        expect(response.body.data.first_name).toBe(contact.first_name)
+        expect(response.body.data.last_name).toBe(contact.last_name)
+        expect(response.body.data.email).toBe(contact.email)
+        expect(response.body.data.phone).toBe(contact.phone)
+    })
+    
+    // datanya salah
+    it('should reject get contact if contact is not found', async () => {
+        // ambil contact nya 
+        const contact = await ContactTest.get()
+        const response = await supertest(web)
+            .get(`/api/contacts/${contact.id + 1}`)
+            .set("X-API-TOKEN", "test")
+        
+        logger.debug(response.body)
+        expect(response.status).toBe(404)
+        expect(response.body.errors).toBeDefined()
+    })
 })
