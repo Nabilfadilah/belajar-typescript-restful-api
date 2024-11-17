@@ -17,6 +17,16 @@ export type CreateContactRequest = {
     phone?: string
 }
 
+// update contact
+export type UpdateContactRequest = {
+    id: number,
+    first_name: string,
+    last_name?: string,
+    email?: string,
+    phone?: string
+}
+
+
 // konpersi user prisma ke user client
 export function toContactResponse(contact: Contact): ContactResponse {
     return {

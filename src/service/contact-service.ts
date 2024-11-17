@@ -1,5 +1,5 @@
-import { User } from "@prisma/client";
-import { ContactResponse, CreateContactRequest, toContactResponse } from "../model/contact-model";
+import { Contact, User } from "@prisma/client";
+import { ContactResponse, CreateContactRequest, toContactResponse, UpdateContactRequest } from "../model/contact-model";
 import { ContactValidation } from "../validation/contact-validation";
 import { Validation } from "../validation/validation";
 import { prismaClient } from "../application/database";
@@ -30,13 +30,12 @@ export class ContactService {
         return toContactResponse(contact)
     }
 
-    // get contact api
-    static async get(user: User, id: number): Promise<ContactResponse> {
-        // cek ke database apakah ada?
+    // repaktor code
+    static async checkContactMustExists(username: string, contactId: number): Promise<Contact> {
         const contact = await prismaClient.contact.findUnique({
             where: {
-                id: id,
-                username: user.username
+                id: contactId,
+                username: username
             }
         })
 
@@ -44,6 +43,37 @@ export class ContactService {
             throw new ResponseError(404, "Contact not found")
         }
 
+        return contact;
+    }
+
+    // get contact api
+    static async get(user: User, id: number): Promise<ContactResponse> {
+        // cek ke database apakah ada?
+        const contact = await this.checkContactMustExists(user.username, id);
+
         return toContactResponse(contact);
     }
+
+    // update contact
+    static async update(user: User, request: UpdateContactRequest) : Promise<ContactResponse> {
+
+        // validasi datanya
+        const updateRequest = Validation.validate(ContactValidation.UPDATE, request);
+
+        // cek apakah contact nya ada?
+        await this.checkContactMustExists(user.username, request.id);
+
+        // update databasenya 
+        const contact = await prismaClient.contact.update({
+            where: {
+                id: updateRequest.id,
+                username: user.username
+            },
+            data: updateRequest
+        })
+
+        return toContactResponse(contact)
+    }
+
+
 }
