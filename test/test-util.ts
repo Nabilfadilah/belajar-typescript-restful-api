@@ -83,3 +83,16 @@ export class ContactTest {
         return contact;
     }
 }
+
+// address utils
+export class AddressTest {
+    static async deleteAll() {
+        await prismaClient.address.deleteMany({
+            where: {
+                contact: {
+                    username: "test"
+                }
+            }
+        })
+    }
+}
