@@ -35,6 +35,9 @@ export type UpdateAddressRequest = {
     postal_code: string;
 }
 
+// remove
+export type RemoveAddressRequest = GetAddressRequest
+
 export function toAddressResponse(address: Address): AddressResponse {
     return {
         id: address.id,
