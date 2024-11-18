@@ -1,0 +1,140 @@
+// User Test
+### Regsiter user
+POST http://localhost:3000/api/users
+Content-Type: application/json
+Accept: application/json
+
+{
+    "username": "abil",
+    "password": "abil123",
+    "name": "Abil"
+}
+
+### Login user
+POST http://localhost:3000/api/users/login
+Content-Type: application/json
+Accept: application/json
+
+{
+    "username": "abil",
+    "password": "rahasiaNgab"
+} 
+
+### Get user
+GET http://localhost:3000/api/users/current
+Accept: application/json
+X-API-TOKEN: 5d62a25e-3201-44ae-b31a-8199c0db513d
+
+### Logout user
+DELETE http://localhost:3000/api/users/current
+Accept: application/json
+X-API-TOKEN: c7904870-5b8f-4759-87dc-530752dca2fe
+
+### Update user name
+PATCH http://localhost:3000/api/users/current
+Accept: application/json
+Content-Type: application/json
+X-API-TOKEN: 353db898-ee89-4c65-9878-0920d73e8b8b
+
+{
+    "name": "Eldoo"
+}
+
+### Update user password
+PATCH http://localhost:3000/api/users/current
+Accept: application/json
+Content-Type: application/json
+X-API-TOKEN: 353db898-ee89-4c65-9878-0920d73e8b8b
+
+{
+    "password": "rahasiaNgab"
+}
+
+// Contact Test
+### Create Contact
+POST http://localhost:3000/api/contacts
+Accept: application/json
+Content-Type: application/json
+X-API-TOKEN: 5d62a25e-3201-44ae-b31a-8199c0db513d
+
+{
+    "first_name": "Ilham",
+    "last_name": "Setiawan",
+    "email": "ilhamm@gmail.com",
+    "phone": "085672211009"
+}
+
+### Update Contact
+// ada bug, ketika update malah nambah datanya!!!
+PUT http://localhost:3000/api/contacts/669
+Accept: application/json
+Content-Type: application/json
+X-API-TOKEN: 5d62a25e-3201-44ae-b31a-8199c0db513d
+
+{
+    "first_name": "Nabil",
+    "last_name": "Fadilah",
+    "email": "abil@gmail.com",
+    "phone": "085672211009"
+}
+
+### Get Contact
+GET http://localhost:3000/api/contacts/670
+Accept: application/json
+X-API-TOKEN: 5d62a25e-3201-44ae-b31a-8199c0db513d
+
+### Delete Contact
+DELETE http://localhost:3000/api/contacts/670
+Accept: application/json
+X-API-TOKEN: 5d62a25e-3201-44ae-b31a-8199c0db513d
+
+### Search Contact
+// ini bug, data semuanya tidak tampil!!!
+# GET http://localhost:3000/api/contacts?size=1&page=2
+GET http://localhost:3000/api/contacts?email=budi
+Accept: application/json
+X-API-TOKEN: 5d62a25e-3201-44ae-b31a-8199c0db513d
+
+// Test Address
+### Add Address
+POST http://localhost:3000/api/contacts/673/addresses
+Accept: application/json
+Content-Type: application/json
+X-API-TOKEN: 5d62a25e-3201-44ae-b31a-8199c0db513d
+
+{
+    "street" : "Jalan kaduana",
+    "city" : "Bandung",
+    "province" : "Jawa Barat",
+    "country" : "Indonesia",
+    "postal_code" : "09876"
+}
+
+### Get Address
+GET http://localhost:3000/api/contacts/673/addresses/222
+Accept: application/json
+X-API-TOKEN: 5d62a25e-3201-44ae-b31a-8199c0db513d
+
+### Update Address
+PUT http://localhost:3000/api/contacts/673/addresses/222
+Accept: application/json
+Content-Type: application/json
+X-API-TOKEN: 5d62a25e-3201-44ae-b31a-8199c0db513d
+
+{
+    "street" : "Jalan Hegarmanah No.40",
+    "city" : "Kab Bandung",
+    "province" : "Jawa Barat",
+    "country" : "Indonesia",
+    "postal_code" : "09876"
+}
+
+### List Address
+GET http://localhost:3000/api/contacts/673/addresses
+Accept: application/json
+X-API-TOKEN: 5d62a25e-3201-44ae-b31a-8199c0db513d
+
+### Remove Address
+DELETE http://localhost:3000/api/contacts/673/addresses/224
+Accept: application/json
+X-API-TOKEN: 5d62a25e-3201-44ae-b31a-8199c0db513d
